@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn beadando.wsgi 
+web: cd portofino && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn beadando.wsgi 
