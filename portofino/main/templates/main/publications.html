@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Kiadványok</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Szűrők</h5>
+                <form method="get">
+                    <div class="form-group">
+                        <label for="title">Cím tartalmazza:</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ filter.form.title }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="min_price">Minimum ár:</label>
+                        <input type="number" class="form-control" id="min_price" name="min_price" value="{{ filter.form.min_price }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="max_price">Maximum ár:</label>
+                        <input type="number" class="form-control" id="max_price" name="max_price" value="{{ filter.form.max_price }}">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="in_stock" name="in_stock" {% if filter.form.in_stock %}checked{% endif %}>
+                        <label class="form-check-label" for="in_stock">Csak készleten lévő</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Szűrés</button>
+                    <a href="{% url 'publications' %}" class="btn btn-secondary">Szűrők törlése</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            {% for publication in publications %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if publication.cover_image %}
+                    <img src="{{ publication.cover_image.url }}" class="card-img-top" alt="{{ publication.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ publication.title }}</h5>
+                        <p class="card-text">{{ publication.description }}</p>
+                        <p class="card-text"><strong>Ár: {{ publication.price }} Ft</strong></p>
+                        <p class="card-text"><small>Készleten: {{ publication.stock }} db</small></p>
+                        {% if publication.stock > 0 %}
+                        <a href="{% url 'add_to_cart' publication.id %}" class="btn btn-primary">Kosárba</a>
+                        {% else %}
+                        <button class="btn btn-secondary" disabled>Elfogyott</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col">
+                <p>Nincs a keresésnek megfelelő kiadvány.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

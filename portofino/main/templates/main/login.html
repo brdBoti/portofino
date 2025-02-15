@@ -1,0 +1,20 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <div class="content-section col-md-6 offset-md-3">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Bejelentkezés</legend>
+                {{ form.as_p }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Bejelentkezés</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Nincs még fiókja? <a class="ml-2" href="{% url 'register' %}">Regisztráció</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %} 

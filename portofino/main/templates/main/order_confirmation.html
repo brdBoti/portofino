@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+{% load custom_filters %}
+{% block content %}
+<h2>Rendelés visszaigazolás</h2>
+<div class="alert alert-success">
+    Köszönjük a rendelését! A rendelés azonosítója: {{ order.id }}
+</div>
+<h3>Rendelés részletei:</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Termék</th>
+            <th>Mennyiség</th>
+            <th>Ár</th>
+            <th>Részösszeg</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.orderitem_set.all %}
+        <tr>
+            <td>{{ item.publication.title }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }} Ft</td>
+            <td>{{ item.price }} Ft</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3"><strong>Végösszeg:</strong></td>
+            <td><strong>{{ order.total_amount }} Ft</strong></td>
+        </tr>
+    </tfoot>
+</table>
+<a href="{% url 'publications' %}" class="btn btn-primary">Vissza a kiadványokhoz</a>
+{% endblock %} 

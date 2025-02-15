@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Kosár</h2>
+{% if cart_items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Termék</th>
+                <th>Mennyiség</th>
+                <th>Ár</th>
+                <th>Összesen</th>
+                <th>Művelet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.publication.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.publication.price }} Ft</td>
+                <td>{{ item.get_total }} Ft</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Törlés</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Végösszeg:</strong></td>
+                <td><strong>{{ total }} Ft</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    <a href="{% url 'checkout' %}" class="btn btn-success">Megrendelés</a>
+{% else %}
+    <p>A kosár üres.</p>
+{% endif %}
+{% endblock %} 

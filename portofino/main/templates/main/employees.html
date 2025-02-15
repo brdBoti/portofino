@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Munkatársaink</h2>
+<div class="row">
+    {% for employee in employees %}
+    <div class="col-md-4 mb-4">
+        <img src="{{ employee.image.url }}" class="img-thumbnail" alt="{{ employee.name }}">
+        <h3>{{ employee.name }}</h3>
+        <p><strong>Pozíció:</strong> {{ employee.position }}</p>
+        <p>„Kedvenc idézetük az irodalomból: {{ employee.quote }}”</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

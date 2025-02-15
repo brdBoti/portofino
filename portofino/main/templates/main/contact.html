@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Kapcsolat</h2>
+<p>Örömmel várjuk a visszajelzéseit! Küldje el nekünk véleményét, javaslatait vagy kérdéseit az alábbi űrlap kitöltésével.</p>
+<form method="post" class="mb-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Küldés</button>
+</form>
+
+<h3>Korábbi vélemények:</h3>
+<ul class="list-group">
+    {% for review in reviews %}
+    <li class="list-group-item">
+        <strong>{{ review.name }}</strong>: {{ review.message }}<br>
+        <small><em>{{ review.date }}</em></small>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ coin.image.large }}" alt="{{ coin.name }}" style="width: 64px; height: 64px; margin-right: 20px;">
+                        <h1 class="mb-0">{{ coin.name }} ({{ coin.symbol|upper }})</h1>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h3>Ár Információk</h3>
+                            <p>Jelenlegi ár: ${{ coin.market_data.current_price.usd|floatformat:2 }}</p>
+                            <p>24h változás: 
+                                <span class="{% if coin.market_data.price_change_percentage_24h > 0 %}text-success{% else %}text-danger{% endif %}">
+                                    {{ coin.market_data.price_change_percentage_24h|floatformat:2 }}%
+                                </span>
+                            </p>
+                            <p>24h Maximum: ${{ coin.market_data.high_24h.usd|floatformat:2 }}</p>
+                            <p>24h Minimum: ${{ coin.market_data.low_24h.usd|floatformat:2 }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Piaci Adatok</h3>
+                            <p>Piaci kapitalizáció: ${{ coin.market_data.market_cap.usd|floatformat:0 }}</p>
+                            <p>Teljes forgalom: ${{ coin.market_data.total_volume.usd|floatformat:0 }}</p>
+                            <p>Forgalomban lévő mennyiség: {{ coin.market_data.circulating_supply|floatformat:0 }}</p>
+                            <p>Maximum mennyiség: {% if coin.market_data.max_supply %}{{ coin.market_data.max_supply|floatformat:0 }}{% else %}Nincs limit{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        {% if is_in_portfolio %}
+                            <form method="POST" action="{% url 'remove_from_portfolio' coin.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Eltávolítás a portfolióból</button>
+                            </form>
+                        {% else %}
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#quantityModal">
+                                Hozzáadás a portfolióhoz
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quantityModalLabel">{{ coin.name }} mennyiség megadása</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'add_to_portfolio' coin.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="quantity">Mennyiség:</label>
+                        <input type="number" step="any" class="form-control" id="quantity" name="quantity" required>
+                        <small class="form-text text-muted">Add meg, hogy mennyi {{ coin.symbol|upper }} tokened van</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
+                    <button type="submit" class="btn btn-success">Hozzáadás</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

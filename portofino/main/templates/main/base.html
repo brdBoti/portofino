@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Kereső</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            background: var(--card-background);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            border: none;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            border: none;
+        }
+
+        .btn-danger {
+            background: var(--accent-color);
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #eee;
+            padding: 0.7rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--background-color);
+            transform: translateX(5px);
+        }
+
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Portfolio specifikus stílusok */
+        .portfolio-card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        }
+
+        .crypto-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .price-change-positive {
+            color: #2ecc71;
+            font-weight: 500;
+        }
+
+        .price-change-negative {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Modal stílusok */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Animációk */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Scrollbar stílus */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'home' %}">Crypto Kereső</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'portfolio' %}">Portfolió</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-auto" id="cryptoSearchForm">
+                <input class="form-control mr-sm-2" type="search" id="cryptoSearch" 
+                       placeholder="Keress kriptovalutát..." aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Keresés</button>
+            </form>
+            <div id="searchResults" class="dropdown-menu" style="width: 300px;"></div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let searchTimeout;
+            let lastQuery = '';
+            const searchResults = $('#searchResults');
+            const minQueryLength = 2;
+            const searchDelay = 500; // Increased delay to 500ms
+
+            $('#cryptoSearchForm').on('submit', function(e) {
+                e.preventDefault();
+            });
+
+            $('#cryptoSearch').on('input', function() {
+                clearTimeout(searchTimeout);
+                const query = $(this).val().trim();
+                
+                if (query.length < minQueryLength) {
+                    searchResults.hide();
+                    return;
+                }
+
+                // Don't search if query hasn't changed
+                if (query === lastQuery) {
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => {
+                    lastQuery = query;
+                    fetch(`/api/search/?query=${query}`)  // We'll create this endpoint
+                        .then(response => response.json())
+                        .then(data => {
+                            searchResults.empty();
+                            
+                            if (data.coins && data.coins.length > 0) {
+                                data.coins.slice(0, 5).forEach(coin => {
+                                    searchResults.append(`
+                                        <a class="dropdown-item" href="#" data-id="${coin.id}">
+                                            <img src="${coin.thumb}" style="width: 20px; height: 20px; margin-right: 10px;">
+                                            ${coin.name} (${coin.symbol.toUpperCase()})
+                                        </a>
+                                    `);
+                                });
+                                searchResults.show();
+                            } else {
+                                searchResults.hide();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            searchResults.hide();
+                        });
+                }, searchDelay);
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#cryptoSearchForm').length) {
+                    searchResults.hide();
+                }
+            });
+
+            searchResults.on('click', '.dropdown-item', function(e) {
+                e.preventDefault();
+                const coinId = $(this).data('id');
+                window.location.href = `/crypto/${coinId}/`;
+            });
+        });
+    </script>
+</body>
+</html>

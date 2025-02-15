@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Összes rendelés</h2>
+{% if orders %}
+    <div class="list-group">
+        {% for order in orders %}
+        <div class="list-group-item">
+            <h4>Rendelés #{{ order.id }}</h4>
+            <p><strong>Vásárló:</strong> {{ order.user.username }}</p>
+            <p><strong>Email:</strong> {{ order.user.email }}</p>
+            <p><strong>Dátum:</strong> {{ order.date_ordered }}</p>
+            <p><strong>Státusz:</strong> {{ order.get_status_display }}</p>
+            <p><strong>Végösszeg:</strong> {{ order.total_amount }} Ft</p>
+            
+            <h5>Rendelt tételek:</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Termék</th>
+                        <th>Mennyiség</th>
+                        <th>Ár</th>
+                        <th>Részösszeg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.orderitem_set.all %}
+                    <tr>
+                        <td>{{ item.publication.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price }} Ft</td>
+                        <td>{{ item.price }} Ft</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Még nincsenek rendelések.</p>
+{% endif %}
+{% endblock %} 
