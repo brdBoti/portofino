@@ -1,2 +1,7 @@
 django
-requests 
+pillow
+requests
+gunicorn
+psycopg2-binary
+dj-database-url
+whitenoise
