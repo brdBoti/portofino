@@ -1,0 +1,76 @@
+{% extends "main/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Barátaim</h4>
+                    <a href="{% url 'search_users' %}" class="btn btn-primary">Új barátok keresése</a>
+                </div>
+                <div class="card-body">
+                    {% if friends %}
+                        <div class="row">
+                            {% for friend in friends %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="card-title mb-1">{{ friend.username }}</h5>
+                                                <p class="card-text text-muted small">Csatlakozott: {{ friend.date_joined|date }}</p>
+                                            </div>
+                                            {% if friend.profile.is_private %}
+                                                <span class="badge badge-secondary">Privát profil</span>
+                                            {% else %}
+                                                <a href="{% url 'view_friend_portfolio' friend.id %}" 
+                                                   class="btn btn-info btn-sm">
+                                                    <i class="fas fa-chart-line mr-1"></i>Portfolió
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Még nincsenek barátaid. Keress új barátokat!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Függő barátkérelmek</h4>
+                </div>
+                <div class="card-body">
+                    {% if pending_requests %}
+                        {% for request in pending_requests %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ request.from_user.username }}</h6>
+                                <div class="btn-group">
+                                    <form method="POST" action="{% url 'accept_friend_request' request.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success btn-sm">Elfogadás</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'reject_friend_request' request.id %}" class="d-inline ml-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Elutasítás</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Nincsenek függő barátkérelmek.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

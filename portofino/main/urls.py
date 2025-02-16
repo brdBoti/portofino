@@ -13,4 +13,11 @@ urlpatterns = [
     path('portfolio/remove/<str:coin_id>/', views.remove_from_portfolio, name='remove_from_portfolio'),
     path('portfolio/update/<str:coin_id>/', views.update_portfolio_quantity, name='update_portfolio_quantity'),
     path('api/search/', views.api_search, name='api_search'),
+    path('friends/', views.friends_list, name='friends_list'),
+    path('friends/search/', views.search_users, name='search_users'),
+    path('friends/request/<int:user_id>/', views.send_friend_request, name='send_friend_request'),
+    path('friends/accept/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('friends/reject/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
+    path('profile/settings/', views.profile_settings, name='profile_settings'),
+    path('friend/<int:friend_id>/portfolio/', views.view_friend_portfolio, name='view_friend_portfolio'),
 ]

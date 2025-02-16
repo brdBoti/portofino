@@ -1,13 +1,13 @@
 {% extends "main/base.html" %}
 {% block content %}
 <div class="container text-center">
-    <h1 class="mt-5 mb-4">Üdvözöljük!</h1>
+    <h1 class="mt-5 mb-4">Kezdőlap</h1>
     {% if user.is_authenticated %}
-        <h2>Üdv, {{ user.username }}!</h2>
+        <h2>Helóka {{ user.username }}!</h2>
         <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{% url 'home' %}">
-            <button type="submit" class="btn btn-danger btn-lg mt-3">Kijelentkezés</button>
+            <button type="submit" class="btn btn-danger btn-lg mt-3 logout-btn">Kijelentkezés</button>
         </form>
     {% else %}
         <div class="row justify-content-center">

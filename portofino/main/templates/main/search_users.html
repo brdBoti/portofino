@@ -1,0 +1,47 @@
+{% extends "main/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Felhasználók keresése</h4>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{% url 'search_users' %}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Keresés felhasználónév alapján..." value="{{ query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Keresés</button>
+                    </div>
+                </div>
+            </form>
+
+            {% if users %}
+                <div class="row">
+                    {% for user in users %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ user.username }}</h5>
+                                <p class="card-text text-muted">Csatlakozott: {{ user.date_joined|date }}</p>
+                                {% if not user.is_friend and not user.has_request %}
+                                    <form method="POST" action="{% url 'send_friend_request' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm">Barátkérelem küldése</button>
+                                    </form>
+                                {% elif user.is_friend %}
+                                    <span class="badge badge-success">Már barátok vagytok</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Függő barátkérelem</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif query %}
+                <p class="text-muted">Nem található felhasználó a megadott keresési feltételekkel.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

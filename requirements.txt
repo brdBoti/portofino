@@ -1,8 +1,2 @@
 django
-requests
-gunicorn
-whitenoise
-psycopg2-binary
-python-dotenv
-dj-database-url
-Pillow 
+requests 

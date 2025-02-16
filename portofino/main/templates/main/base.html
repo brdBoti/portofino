@@ -3,46 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Kereső</title>
+    <title>Portofino vizualizátor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --background-color: #f8f9fa;
-            --card-background: #ffffff;
+            {% if user.is_authenticated and user.profile.theme == 'dark' %}
+                --primary-color: #ffffff;
+                --secondary-color: #bb86fc;
+                --background-color: #121212;
+                --card-background: #1e1e1e;
+                --text-color: #ffffff;
+                --navbar-text: #000000;
+                --navbar-gradient-start: #bb86fc;
+                --navbar-gradient-end: #8b55ff;
+            {% elif user.is_authenticated and user.profile.theme == 'blue' %}
+                --primary-color: #1a237e;
+                --secondary-color: #0d47a1;
+                --background-color: #e3f2fd;
+                --card-background: #ffffff;
+                --text-color: #000000;
+                --navbar-text: #000000;
+                --navbar-gradient-start: #64b5f6;
+                --navbar-gradient-end: #2196f3;
+            {% else %}
+                --primary-color: #2c3e50;
+                --secondary-color: #3498db;
+                --background-color: #f8f9fa;
+                --card-background: #ffffff;
+                --text-color: #000000;
+                --navbar-text: #000000;
+                --navbar-gradient-start: #3498db;
+                --navbar-gradient-end: #2980b9;
+            {% endif %}
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: var(--background-color);
-            color: var(--primary-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
 
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            background: linear-gradient(135deg, var(--navbar-gradient-start), var(--navbar-gradient-end)) !important;
             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             padding: 1rem 2rem;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white !important;
-        }
-
-        .nav-link {
-            color: rgba(255,255,255,0.9) !important;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .navbar-brand, .nav-link {
+            color: var(--navbar-text) !important;
         }
 
         .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
+            color: var(--navbar-text) !important;
+            opacity: 0.8;
         }
 
         .card {
@@ -50,7 +66,7 @@
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            background: var(--card-background);
+            background-color: var(--card-background);
         }
 
         .card:hover {
@@ -76,7 +92,7 @@
         }
 
         .btn-danger {
-            background: var(--accent-color);
+            background: var(--primary-color);
             border: none;
         }
 
@@ -136,7 +152,7 @@
         }
 
         .price-change-negative {
-            color: var(--accent-color);
+            color: var(--primary-color);
             font-weight: 500;
         }
 
@@ -183,11 +199,92 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-color);
         }
+
+        /* Sötét mód specifikus stílusok */
+        {% if user.is_authenticated and user.profile.theme == 'dark' %}
+        .card {
+            border: 1px solid #333;
+        }
+        
+        .dropdown-menu {
+            background-color: var(--card-background);
+            border: 1px solid #333;
+        }
+
+        .dropdown-item {
+            color: var(--text-color);
+        }
+
+        .dropdown-item:hover {
+            background-color: #2d2d2d;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            background-color: #2d2d2d;
+            border-color: #333;
+            color: var(--text-color);
+        }
+
+        .form-control:focus {
+            background-color: #2d2d2d;
+            color: var(--text-color);
+        }
+
+        .btn-outline-success {
+            color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #2ecc71;
+            color: #000;
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
+            color: #ffffff !important;
+        }
+
+        .logout-btn {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
+            color: #ffffff !important;
+        }
+        {% endif %}
+
+        /* Általános stílusok a logout gombhoz (minden témához) */
+        .logout-btn {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url 'home' %}">Crypto Kereső</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Portofino vizualizátor</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -196,6 +293,26 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'portfolio' %}">Portfolió</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'friends_list' %}">Barátok</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{% url 'profile_settings' %}">Profil Beállítások</a>
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="dropdown-item" type="submit">Kijelentkezés</button>
+                            </form>
+                        </div>
                     </li>
                 {% endif %}
             </ul>

@@ -1,0 +1,49 @@
+{% extends "main/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">{{ friend.username }} portfoliója</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for data in portfolio_data %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ data.coin.image.small }}" alt="{{ data.coin.name }}" style="width: 32px; height: 32px; margin-right: 10px;">
+                        <h5 class="mb-0">{{ data.coin.name }} ({{ data.coin.symbol|upper }})</h5>
+                    </div>
+                    <div class="mt-3">
+                        <p class="mb-1">Mennyiség: {{ data.item.quantity|floatformat:8 }} {{ data.coin.symbol|upper }}</p>
+                        <p class="mb-1">Ár: ${{ data.coin.market_data.current_price.usd|floatformat:2 }}</p>
+                        <p class="mb-1">Érték: ${{ data.total_value|floatformat:2 }}</p>
+                        <p class="mb-1">24h változás: 
+                            <span class="{% if data.coin.market_data.price_change_percentage_24h > 0 %}text-success{% else %}text-danger{% endif %}">
+                                {{ data.coin.market_data.price_change_percentage_24h|floatformat:2 }}%
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                {{ friend.username }} portfoliója még üres.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if portfolio_data %}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h3>Teljes portfolió érték: ${{ total_portfolio_value|floatformat:2 }}</h3>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
