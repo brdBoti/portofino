@@ -19,8 +19,6 @@ def register(request):
         form = SimpleUserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create profile for new user
-            UserProfile.objects.create(user=user)
             username = form.cleaned_data.get('username')
             messages.success(request, f'Fiók létrehozva: {username}!')
             return redirect('login')
